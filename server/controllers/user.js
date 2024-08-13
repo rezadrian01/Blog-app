@@ -3,10 +3,11 @@ const { errTemp } = require("../utils/error");
 
 //show user profile
 //search followers and following
+//update profile not just bio
 exports.showUserProfile = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findById(userId, "-password")?.populate(
+    const username = req.params.username;
+    const user = await User.findOne({ name: username }, "-password").populate(
       "posts",
       "img"
     );
@@ -22,15 +23,14 @@ exports.showUserProfile = async (req, res, next) => {
 
 exports.showFollowers = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findById(userId, "-password")?.populate(
-      "followers",
-      "name _id"
-    );
+    const username = req.params.username;
+    const user = await User.findOne({ name: username }, "-password")
+      .select("followers")
+      .populate("followers", "name _id");
     if (!user) errTemp("User not found", 404);
     res
       .status(200)
-      .json({ success: true, message: "Success get followers user" });
+      .json({ success: true, message: "Success get followers user", user });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
@@ -39,15 +39,14 @@ exports.showFollowers = async (req, res, next) => {
 
 exports.showFollowed = async (req, res, next) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findById(userId, "-password")?.populate(
-      "followed",
-      "name _id"
-    );
+    const username = req.params.username;
+    const user = await User.findOne({ name: username }, "-password")
+      .select("followed")
+      .populate("followed", "name _id");
     if (!user) errTemp("User not found", 404);
     res
       .status(200)
-      .json({ success: true, message: "Success get followed user" });
+      .json({ success: true, message: "Success get followed user", user });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
@@ -103,9 +102,9 @@ exports.addFollowing = async (req, res, next) => {
   try {
     //validation
     if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
-    const followedUserId = req.params.userId;
+    const followedUsername = req.params.username;
     const currentUser = await User.findById(req.userId);
-    const followedUser = await User.findById(followedUserId);
+    const followedUser = await User.findOne({ name: followedUsername });
     if (!currentUser || !followedUser) errTemp("User not found", 404);
 
     //current user
@@ -129,9 +128,9 @@ exports.removeFollowing = async (req, res, next) => {
   try {
     //validation
     if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
-    const followedUserId = req.params.userId;
+    const followedUsername = req.params.username;
     const currentUser = await User.findById(req.userId);
-    const followedUser = await User.findById(followedUserId);
+    const followedUser = await User.findOne({ name: followedUsername });
     if (!currentUser || !followedUser) errTemp("User not found", 404);
 
     currentUser.followed.pull(followedUser);

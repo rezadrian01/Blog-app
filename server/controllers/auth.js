@@ -56,6 +56,7 @@ exports.googleAuthCallback = async (req, res, next) => {
         { expiresIn: process.env.JWT_EXPIRY }
       );
     } else {
+      if (data.name !== existingUser.name) data.name = existingUser.name;
       jwtToken = jwt.sign(
         {
           userId: existingUser._id,
@@ -65,7 +66,7 @@ exports.googleAuthCallback = async (req, res, next) => {
       );
     }
     return res.redirect(
-      `${process.env.CLIENT_DOMAIN}/auth/callback?token=${jwtToken}`
+      `${process.env.CLIENT_DOMAIN}/auth/callback?token=${jwtToken}&username=${data.name}`
     );
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
@@ -123,7 +124,13 @@ exports.signin = async (req, res, next) => {
       process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRY }
     );
-    res.status(200).json({ message: "Login successfully", token: jwtToken });
+    res
+      .status(200)
+      .json({
+        message: "Login successfully",
+        token: jwtToken,
+        name: user.name,
+      });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
