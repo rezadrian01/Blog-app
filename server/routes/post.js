@@ -6,5 +6,7 @@ const { body } = require("express-validator");
 router.post("/post", postControllers.createPost);
 router.get("/posts", postControllers.fetchPosts);
 router.get("/post/:postId", postControllers.createPost);
+router.put("/post/:postId", postControllers.updatePost);
+router.delete("/post/:postId", postControllers.deletePost);
 
 module.exports = router;
