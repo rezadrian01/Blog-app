@@ -13,12 +13,12 @@ const commentSchema = new Schema(
       ref: "Post",
       required: true,
     },
-    repliesComment: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Comment",
-      },
-    ],
+    // repliesComment: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Comment",
+    //   },
+    // ],
     likes: [
       {
         type: Schema.Types.ObjectId,

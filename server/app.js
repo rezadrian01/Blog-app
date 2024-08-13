@@ -14,6 +14,9 @@ const uri = process.env.MONGODB_URI;
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/post");
 
+//middleware
+const { isAuth } = require("./middleware/auth");
+
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "images");
@@ -40,6 +43,8 @@ app
   .use(bodyParser.json())
   .use(cors())
   .use(multer({ fileFilter, storage: fileStorage }).single("image"));
+
+app.use(isAuth);
 
 app.use("/auth", authRoutes);
 app.use("/post", postRoutes);

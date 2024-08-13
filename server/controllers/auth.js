@@ -129,3 +129,6 @@ exports.login = async (req, res, next) => {
     next(err);
   }
 };
+
+//add bio function(remove and create)
+//add following(add and remove) function

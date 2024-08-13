@@ -1,5 +1,5 @@
 const fs = require("node:fs/promises");
-const path = require(path);
+const path = require("path");
 
 exports.deleteFile = async (filePath) => {
   filePath = path.join(__dirname, "..", filePath);
