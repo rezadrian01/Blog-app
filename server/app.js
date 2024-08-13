@@ -10,6 +10,10 @@ config();
 const app = express();
 const uri = process.env.MONGODB_URI;
 
+//routes
+const authRoutes = require("./routes/auth");
+const postRoutes = require("./routes/post");
+
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "images");
@@ -36,6 +40,9 @@ app
   .use(bodyParser.json())
   .use(cors())
   .use(multer({ fileFilter, storage: fileStorage }).single("image"));
+
+app.use("/auth", authRoutes);
+app.use("/post", postRoutes);
 
 app.use((err, req, res, next) => {
   const message = err.message || "An error occurred!";
