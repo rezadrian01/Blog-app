@@ -16,6 +16,7 @@ exports.createPost = async (req, res, next) => {
     if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
     const user = await User.findById(req.userId);
     if (!user) errTemp("User not found", 404);
+    if (!req.file) errTemp("Image must be upload at least 1");
 
     const img = req.file.path.replace(/\\/g, "/");
     const content = req.body.content;
