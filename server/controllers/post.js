@@ -223,7 +223,7 @@ exports.editComment = async (req, res, next) => {
   }
 };
 
-exports.removeComment = async (req, res, next) => {
+exports.deleteComment = async (req, res, next) => {
   try {
     //validation
     const postId = req.params.postId;
@@ -242,6 +242,42 @@ exports.removeComment = async (req, res, next) => {
     }
     await Comment.findByIdAndDelete(commentId);
     res.status(200).json({ success: true, message: "Success delete comment" });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
+exports.likeComment = async (req, res, next) => {
+  try {
+    const commentId = req.params.commentId;
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
+    const user = await User.findById(req.userId);
+    const comment = await Comment.findById(commentId);
+    if (!user || !comment) errTemp("User or Comment is not found", 404);
+
+    comment.likes.push(user);
+    await comment.save();
+    res.status(200).json({ success: true, message: "Success like comment" });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
+exports.removeLikeComment = async (req, res, next) => {
+  try {
+    const commentId = req.params.commentId;
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
+    const user = await User.findById(req.userId);
+    const comment = await Comment.findById(commentId);
+    if (!user || !comment) errTemp("User or Comment is not found", 404);
+
+    comment.likes.pull(user._id);
+    await comment.save();
+    res
+      .status(200)
+      .json({ success: true, message: "Success remove like in comment" });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
