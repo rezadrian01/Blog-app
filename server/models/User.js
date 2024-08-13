@@ -15,6 +15,10 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
+    imgProfile: {
+      type: String,
+      default: "images/user-default.jpg",
+    },
     posts: [
       {
         type: Schema.Types.ObjectId,

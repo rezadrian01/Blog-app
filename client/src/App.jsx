@@ -56,17 +56,17 @@ export default function App() {
     {
       path: "/auth",
       children: [
+        // {
+        //   path: "google",
+        //   element: <GoogleAuth />,
+        // },
         {
-          path: "google",
-          element: <GoogleAuth />,
+          index: true,
+          element: <Signin />,
         },
         {
           path: "signup",
           element: <Signup />,
-        },
-        {
-          path: "signin",
-          element: <Signin />,
         },
         {
           path: "google/callback",

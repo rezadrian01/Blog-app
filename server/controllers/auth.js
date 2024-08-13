@@ -124,13 +124,11 @@ exports.signin = async (req, res, next) => {
       process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRY }
     );
-    res
-      .status(200)
-      .json({
-        message: "Login successfully",
-        token: jwtToken,
-        name: user.name,
-      });
+    res.status(200).json({
+      message: "Login successfully",
+      token: jwtToken,
+      name: user.name,
+    });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);

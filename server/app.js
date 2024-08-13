@@ -5,6 +5,9 @@ const { config } = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const fs = require("fs").promises;
+const path = require("path");
+
 config();
 
 const app = express();
@@ -19,8 +22,16 @@ const postRoutes = require("./routes/post");
 const { isAuth } = require("./middleware/auth");
 
 const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "images");
+  destination: async (req, file, cb) => {
+    let folder = "images";
+    if (req.body.folderName) {
+      const safeFolderName = path
+        .normalize(req.body.folderName)
+        .replace(/^(\.\.(\/|\\|$))+/, "");
+      folder = `images/${safeFolderName}`;
+    }
+    await fs.mkdir(path.join(__dirname, folder), { recursive: true });
+    cb(null, folder);
   },
   filename: (req, file, cb) => {
     const date = new Date().toISOString().replace(/:/g, "-");

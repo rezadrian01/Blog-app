@@ -4,6 +4,7 @@ const { errTemp } = require("../utils/error");
 //show user profile
 //search followers and following
 //update profile not just bio
+//create forgot password functionality
 exports.showUserProfile = async (req, res, next) => {
   try {
     const username = req.params.username;
@@ -82,14 +83,23 @@ exports.searchUser = async (req, res, next) => {
   }
 };
 
-exports.updateBio = async (req, res, next) => {
+exports.updateUserProfile = async (req, res, next) => {
   try {
     if (!req.isAuth || req.userId) errTemp("Not Authorized", 403);
     const user = await User.findById(req.userId);
     if (!user) errTemp("User not found", 404);
 
     const newBio = req.body.bio || "";
+    const newName = req.body.name || user.name;
+    if (req.body.password) {
+      const hashedPassword = await bcrypt.hash(req.body.password, 12);
+      user.password = hashedPassword;
+    }
+    if (req.file) {
+      user.imgProfile = req.file.path.replace(/\\/g, "/");
+    }
     user.bio = newBio;
+    user.name = newName;
     await user.save();
     res.status(200).json({ success: true, message: "Success update bio" });
   } catch (err) {
