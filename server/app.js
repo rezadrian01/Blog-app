@@ -12,6 +12,7 @@ const uri = process.env.MONGODB_URI;
 
 //routes
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 const postRoutes = require("./routes/post");
 
 //middleware
@@ -47,6 +48,7 @@ app
 app.use(isAuth);
 
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 app.use("/post", postRoutes);
 
 app.use((err, req, res, next) => {

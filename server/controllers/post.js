@@ -99,6 +99,7 @@ exports.updatePost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     const post = await Post.findById(postId);
     if (!user || !post) errTemp("User or Post is not found", 404);
+    //cek userId with userId in post
 
     const content = req.body.content || "";
     post.content = content;
@@ -122,12 +123,125 @@ exports.deletePost = async (req, res, next) => {
     const post = await Post.findById(postId);
     const user = await User.findById(req.userId);
     if (!user || !post) errTemp("User or Post is not found", 404);
+    //cek userId with userId in post
 
     user.posts.pull(postId);
     await user.save();
     await deleteFile(post.img);
     await Post.findByIdAndDelete(postId);
     res.status(200).json({ success: true, message: "Success delete post" });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
+exports.addLikePost = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
+    const user = await User.findById(req.userId);
+    const post = await Post.findById(postId);
+    if (!post || !user) errTemp("User or Post is not found", 404);
+    user.likedPosts.push(post);
+    post.likes.push(user);
+    await user.save();
+    await post.save();
+    res.status(200).json({ success: true, message: "Success add like" });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
+exports.removeLikePost = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    if (!req.isAuth || !req.useId) errTemp("Not Authorized", 403);
+    const user = await User.findById(req.userId);
+    const post = await Post.findById(postId);
+    if (!user || !post) errTemp("User or Post is not found", 404);
+
+    user.likedPosts.pull(post);
+    post.likes.pull(user);
+    await user.save();
+    await post.save();
+    res.status(200).json({ success: true, message: "Success remove like" });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
+exports.createComment = async (req, res, next) => {
+  try {
+    //validation
+    const postId = req.params.postId;
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
+    const user = await User.findById(req.userId);
+    const post = await Post.findById(postId);
+    if (!user || !post) errTemp("User or Post is not found", 404);
+
+    const comment = req.body.comment;
+    const newComment = new Comment({
+      userId: user._id,
+      postId,
+      content: comment,
+    });
+    await newComment.save();
+    res.status(201).json({ success: true, message: "Success create comment" });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
+//edit comment
+exports.editComment = async (req, res, next) => {
+  try {
+    //validation
+    const postId = req.params.postId;
+    const commentId = req.body.commentId;
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
+    const user = await User.findById(req.userId);
+    const post = await Post.findById(postId);
+    const comment = await Comment.findById(commentId);
+    if (!user || !post || !comment)
+      errTemp("User or Post or Comment is not found", 404);
+    if (
+      comment.userId !== user._id.toString() ||
+      comment.postId !== post._id.toString()
+    ) {
+      errTemp("Access denied", 403);
+    }
+    comment.content = req.body.commentContent;
+    await comment.save();
+    res.status(200).json({ success: true, message: "Success edit comment" });
+  } catch (err) {
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
+  }
+};
+
+exports.removeComment = async (req, res, next) => {
+  try {
+    //validation
+    const postId = req.params.postId;
+    const commentId = req.body.commentId;
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
+    const user = await User.findById(req.userId);
+    const post = await Post.findById(postId);
+    const comment = await Comment.findById(commentId);
+    if (!user || !post || !comment)
+      errTemp("User or Post or Comment is not found", 404);
+    if (
+      comment.userId !== user._id.toString() ||
+      comment.postId !== post._id.toString()
+    ) {
+      errTemp("Access denied", 403);
+    }
+    await Comment.findByIdAndDelete(commentId);
+    res.status(200).json({ success: true, message: "Success delete comment" });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
