@@ -20,6 +20,8 @@ exports.createPost = async (req, res, next) => {
 
     const img = req.file.path.replace(/\\/g, "/");
     const content = req.body.content;
+    console.log(content);
+    console.log(img);
     const newPost = new Post({
       userId: user._id,
       img,

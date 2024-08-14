@@ -16,8 +16,9 @@ export default function Sidebar() {
   const [isCreatePost, setIsCreatePost] = useState(false);
   const { isLoggedIn, username } = useSelector((state) => state.auth);
   const { data, isPending, isError, error } = useQuery({
-    queryKey: ["user"],
-    queryFn: ({ signal }) => fetchUserProfile({ signal, username }),
+    queryKey: ["user", { username }],
+    queryFn: ({ signal, queryKey }) =>
+      fetchUserProfile({ signal, ...queryKey[1] }),
   });
   const userProfilePhoto = data?.user?.imgProfile;
 
@@ -32,8 +33,8 @@ export default function Sidebar() {
   return (
     <>
       {isCreatePost && (
-        <Modal onClose={handleStopCreatePost}>
-          <CreatePost />
+        <Modal mt="mt-36" onClose={handleStopCreatePost}>
+          <CreatePost onClose={handleStopCreatePost} />
         </Modal>
       )}
       <div className="h-screen w-64 sticky top-0 p-4 bg-slate-300">
@@ -54,6 +55,7 @@ export default function Sidebar() {
                 }/${userProfilePhoto}`}
                 content="Profile"
                 circleImg
+                to={`${username}`}
               />
             )}
           </div>
