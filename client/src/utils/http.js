@@ -17,7 +17,7 @@ export async function signup(authData) {
   const resData = await response.json();
   if (!response.ok) {
     throw json(
-      { message: resData.message || "Failed to signup" },
+      { message: resData?.message || "Failed to signup" },
       { status: response.status || 500 }
     );
   }
@@ -38,7 +38,7 @@ export async function signin(authData) {
   const resData = await response.json();
   if (!response.ok) {
     throw json(
-      { message: resData.message || "Failed to signin" },
+      { message: resData?.message || "Failed to signin" },
       { status: response.status || 500 }
     );
   }
@@ -56,11 +56,25 @@ export async function fetchUserProfile({ signal, username }) {
   if (!response.ok) {
     throw json(
       {
-        message: resData.message || "Failed to fetch user profile",
+        message: resData?.message || "Failed to fetch user profile",
       },
       {
         status: response.status || 500,
       }
+    );
+  }
+  return resData;
+}
+
+export async function fetchUserImgProfile({ username }) {
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/user/profile/img/${username}`
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: resData?.message || "Failed to fetch user image" },
+      { status: response.status || 500 }
     );
   }
   return resData;
@@ -83,7 +97,7 @@ export async function startFollowing(followedUser) {
   const resData = await response.json();
   if (!response.ok) {
     throw json(
-      { message: resData.message || "Failed to follow user" },
+      { message: resData?.message || "Failed to follow user" },
       { status: response.status || 500 }
     );
   }
@@ -106,7 +120,7 @@ export async function stopFollowing(removedUser) {
   const resData = await response.json();
   if (!response.ok) {
     throw json(
-      { message: resData.message || "Failed to unfollow user" },
+      { message: resData?.message || "Failed to unfollow user" },
       {
         status: response.status || 500,
       }
@@ -134,11 +148,26 @@ export async function createPost(postData) {
   if (!response.ok) {
     throw json(
       {
-        message: resData.message || "Failed to create post",
+        message: resData?.message || "Failed to create post",
       },
       {
         status: response.status || 500,
       }
+    );
+  }
+  return resData;
+}
+
+export async function fetchPost({ postId, signal }) {
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/post/post/${postId}`,
+    { signal }
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: resData?.message || "Failed to fetch post" },
+      { status: response.status || 500 }
     );
   }
   return resData;

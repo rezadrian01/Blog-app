@@ -74,12 +74,15 @@ exports.fetchPosts = async (req, res, next) => {
 exports.fetchPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    const post = await Post.findById(postId)?.populate("likes", "name _id");
+    let post = await Post.findById(postId)
+      .populate("likes", "name _id")
+      .populate("userId", "imgProfile name");
     if (!post) errTemp("Post not found", 404);
     const comments = await Comment.find({ postId }).populate(
       "userId",
       "name _id"
     );
+    post = post.toObject();
     post.comments = comments;
     res
       .status(200)
