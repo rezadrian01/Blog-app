@@ -54,6 +54,7 @@ export default function UserProfile() {
   // console.log(data);
   if (data) {
     const { user } = data;
+    // console.log(user);
     const totalPosts = user.posts.length;
     const totalFollowers = user.followers.length;
     const totalFollowed = user.followed.length;
@@ -67,18 +68,18 @@ export default function UserProfile() {
 
     return (
       <>
-        <header className="flex justify-center lg:gap-16 items-start lg:pt-16">
+        <header className="flex ml-6 lg:ml-0 md:justify-center gap-8 lg:gap-16 items-start pt-16 lg:text-xl">
           <div>
             <img
-              className="lg:w-20 lg:h-20 rounded-full"
+              className=" w-14 lg:w-20 h-14 lg:h-20 rounded-full"
               src={`${import.meta.env.VITE_SERVER_DOMAIN}/${user.imgProfile} `}
             />
           </div>
           <div className="flex flex-col gap-4">
-            <div className="flex lg:gap-8">
-              <h2 className=" text-2xl">{user.name}</h2>
+            <div className="flex flex-col md:flex-row gap-4 lg:gap-8">
+              <h2 className="text-xl lg:text-2xl">{user.name}</h2>
               {username === currentUser && (
-                <button className="bg-zinc-200 hover:bg-zinc-300 rounded p-2">
+                <button className="bg-zinc-200 hover:bg-zinc-300 rounded text-sm p-1 lg:text-base lg:p-2">
                   Edit Profile
                 </button>
               )}
@@ -111,23 +112,51 @@ export default function UserProfile() {
                 </>
               )}
             </div>
-            <div className="flex gap-4 text-[.75rem]">
-              <div className=" flex flex-col items-center">
-                <p>TOTAL POSTS</p>
+            <div className="flex gap-4 text-[.95rem] justify-evenly">
+              <div className="flex flex-col items-center">
+                <p>Posts</p>
                 <span>{totalPosts}</span>
               </div>
               <div className=" flex flex-col items-center">
-                <Link to="followers">TOTAL FOLLOWERS</Link>
+                <Link to="followers">Followers</Link>
                 <span>{totalFollowers}</span>
               </div>
               <div className=" flex flex-col items-center">
-                <Link to="followed">TOTAL FOLLOWED</Link>
+                <Link to="followed">Following</Link>
                 <span>{totalFollowed}</span>
               </div>
             </div>
             <p>{user.bio}</p>
           </div>
         </header>
+        <section className="mt-20 w-[18rem] sm:w-[30rem] md:w-[39rem] lg:w-[51rem] mx-auto">
+          <div className="grid grid-cols-3 gap-4">
+            {user.posts.map((post) => {
+              return (
+                <Link to={`../post/${post._id}`} key={post._id}>
+                  <img
+                    className=" object-cover  w-[6rem] sm:w-[10rem] md:w-[13rem] lg:w-[17rem] h-[6rem] sm:h-[10rem] md:h-[13rem] lg:h-[17rem]"
+                    src={`${import.meta.env.VITE_SERVER_DOMAIN}/${post.img}`}
+                  />
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+        {/* <section className="mt-20 w-[15rem] sm:w-[30rem] md:w-[39rem] lg:w-[51rem] mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 gap-4">
+            {user.posts.map((post) => {
+              return (
+                <Link to={`../post/${post._id}`} key={post._id}>
+                  <img
+                    className=" object-cover  w-[15rem] sm md:w-[13rem] lg:w-[17rem] h-[15rem] md:h-[13rem] lg:h-[17rem]"
+                    src={`${import.meta.env.VITE_SERVER_DOMAIN}/${post.img}`}
+                  />
+                </Link>
+              );
+            })}
+          </div>
+        </section> */}
       </>
     );
   }

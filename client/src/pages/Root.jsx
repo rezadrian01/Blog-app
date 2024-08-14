@@ -9,7 +9,7 @@ export default function RootLayout() {
   return (
     <div className="flex justify-start">
       <Sidebar />
-      <main className="min-h-[200vh] flex-grow">
+      <main className="min-h-[200vh] flex-grow bg-[#fafafa]">
         <Outlet />
       </main>
     </div>
