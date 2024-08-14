@@ -83,6 +83,7 @@ exports.signup = async (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
+    console.log(email, password, name);
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       errTemp("Email has been taken", 401);

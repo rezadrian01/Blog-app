@@ -45,16 +45,16 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "image/jpg" ||
     file.mimetype === "image/jpeg"
   ) {
-    cb(null, false);
-  } else {
     cb(null, true);
+  } else {
+    cb(null, false);
   }
 };
 
 app
-  .use(bodyParser.json())
   .use(cors())
-  .use(multer({ fileFilter, storage: fileStorage }).single("image"));
+  .use(bodyParser.json())
+  .use(multer({ storage: fileStorage, fileFilter }).single("image"));
 
 app.use(isAuth);
 

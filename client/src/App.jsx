@@ -1,4 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider } from "@tanstack/react-query";
+
+import { queryClient } from "./utils/http";
+
 import RootLayout from "./pages/Root";
 import HomePage from "./pages/Home";
 import GoogleAuth from "./pages/auth/google";
@@ -76,8 +80,8 @@ export default function App() {
     },
   ]);
   return (
-    <RouterProvider router={router}>
-      <h1>Hello world</h1>
-    </RouterProvider>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }

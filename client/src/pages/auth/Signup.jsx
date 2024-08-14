@@ -1,13 +1,23 @@
-import { Link, Form } from "react-router-dom";
+import { Link, Form, useNavigate } from "react-router-dom";
 import AuthInput from "../../components/UI/AuthInput";
 import googleLogo from "../../assets/google logo.svg";
+import { useMutation } from "@tanstack/react-query";
+import { signup } from "../../utils/http";
 
 export default function Signup() {
+  const navigate = useNavigate();
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: signup,
+    onSuccess: () => {
+      navigate("..");
+    },
+  });
   function handleSubmit(event) {
     event.preventDefault();
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd.entries());
     // console.log(data);
+    mutate({ ...data });
   }
   return (
     <div className="flex justify-center">
@@ -20,7 +30,14 @@ export default function Signup() {
               <Link to="..">Signin Here</Link>
             </span>
           </p>
+          {isError && (
+            <div className="mt-4 bg-red-500/30 p-4 rounded">
+              <h3 className="font-medium text-xl">An Error Occurred!</h3>
+              <p>{"Failed to signup, please try again later"}</p>
+            </div>
+          )}
         </div>
+
         <Form onSubmit={handleSubmit}>
           <div className="flex flex-col justify-between h-[50vh]">
             <div className="flex flex-col gap-12">
@@ -29,17 +46,21 @@ export default function Signup() {
               <AuthInput label="Password" name="password" password />
             </div>
             <div className="flex flex-col gap-2 text-center">
-              <button className="bg-blue-500 text-white px-4 py-3 rounded hover:bg-blue-600">
-                Signup
-              </button>
-              {/* <p>or</p> */}
-              <button
-                type="button"
-                className="border-2 border-gray-400 px-4 py-2 rounded flex items-center justify-center gap-2"
-              >
-                <img className="w-7 h-7" src={googleLogo} />
-                Signin With Google
-              </button>
+              {isPending && <p className="animate-pulse">Submiting...</p>}
+              {!isPending && (
+                <>
+                  <button className="bg-blue-500 text-white px-4 py-3 rounded hover:bg-blue-600">
+                    Signup
+                  </button>
+                  <button
+                    type="button"
+                    className="border-2 border-gray-400 px-4 py-2 rounded flex items-center justify-center gap-2"
+                  >
+                    <img className="w-7 h-7" src={googleLogo} />
+                    Signin With Google
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </Form>

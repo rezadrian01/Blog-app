@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const authControllers = require("../controllers/auth");
 
+//add validation
+
 router.get("/google", authControllers.googleAuth);
 router.get("/google/callback", authControllers.googleAuthCallback);
 router.post("/signup", authControllers.signup);
