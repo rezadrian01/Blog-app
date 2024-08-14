@@ -66,9 +66,10 @@ export async function fetchUserProfile({ signal, username }) {
   return resData;
 }
 
-export async function fetchUserImgProfile({ username }) {
+export async function fetchUserImgProfile({ username, signal }) {
   const response = await fetch(
-    `${import.meta.env.VITE_SERVER_DOMAIN}/user/profile/img/${username}`
+    `${import.meta.env.VITE_SERVER_DOMAIN}/user/profile/img/${username}`,
+    { signal }
   );
   const resData = await response.json();
   if (!response.ok) {
@@ -167,6 +168,54 @@ export async function fetchPost({ postId, signal }) {
   if (!response.ok) {
     throw json(
       { message: resData?.message || "Failed to fetch post" },
+      { status: response.status || 500 }
+    );
+  }
+  return resData;
+}
+
+export async function startLike(postId) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw json({ message: "Missing token" }, { status: 403 });
+  }
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/post/post/like/${postId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    throw json(
+      { message: "Failed to like post" },
+      { status: response.status || 500 }
+    );
+  }
+  return resData;
+}
+
+export async function stopLike(postId) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw json({ message: "Missing token" }, { status: 403 });
+  }
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/post/post/removeLike/${postId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    throw json(
+      { message: "Failed to remove like" },
       { status: response.status || 500 }
     );
   }

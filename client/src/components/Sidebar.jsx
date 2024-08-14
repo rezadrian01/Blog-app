@@ -33,7 +33,10 @@ export default function Sidebar() {
   return (
     <>
       {isCreatePost && (
-        <Modal mt="mt-36" onClose={handleStopCreatePost}>
+        <Modal
+          dialogClass={`bg-slate-100 z-20 p-6 rounded-lg mt-36 w-11/12 md:w-2/3 lg:w-2/3`}
+          onClose={handleStopCreatePost}
+        >
           <CreatePost onClose={handleStopCreatePost} />
         </Modal>
       )}

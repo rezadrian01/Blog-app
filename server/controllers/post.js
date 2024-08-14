@@ -75,7 +75,7 @@ exports.fetchPost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
     let post = await Post.findById(postId)
-      .populate("likes", "name _id")
+      .populate("likes", "name _id imgProfile")
       .populate("userId", "imgProfile name");
     if (!post) errTemp("Post not found", 404);
     const comments = await Comment.find({ postId }).populate(
@@ -119,6 +119,7 @@ exports.updatePost = async (req, res, next) => {
   }
 };
 
+//delete all the comment in this post
 exports.deletePost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
@@ -161,7 +162,7 @@ exports.addLikePost = async (req, res, next) => {
 exports.removeLikePost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    if (!req.isAuth || !req.useId) errTemp("Not Authorized", 403);
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
     const user = await User.findById(req.userId);
     const post = await Post.findById(postId);
     if (!user || !post) errTemp("User or Post is not found", 404);
