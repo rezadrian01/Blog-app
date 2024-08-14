@@ -13,7 +13,7 @@ export default function GoogleCallback() {
     if (token) {
       localStorage.setItem("token", token);
       localStorage.setItem("username", username);
-      dispatch(authActions.login());
+      dispatch(authActions.login({ username }));
       navigate("/");
       return;
     }

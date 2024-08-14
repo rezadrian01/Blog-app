@@ -24,6 +24,7 @@ const { isAuth } = require("./middleware/auth");
 const fileStorage = multer.diskStorage({
   destination: async (req, file, cb) => {
     let folder = "images";
+    console.log(req.body.folderName);
     if (req.body.folderName) {
       const safeFolderName = path
         .normalize(req.body.folderName)

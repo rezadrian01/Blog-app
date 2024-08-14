@@ -2,15 +2,18 @@ import { Form } from "react-router-dom";
 import closeLogo from "../assets/close.svg";
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { createPost } from "../utils/http";
+import { createPost, queryClient } from "../utils/http";
+import { useSelector } from "react-redux";
 
 export default function CreatePost({ onClose }) {
   const [previewImg, setPreviewImg] = useState(null);
+  const { username } = useSelector((state) => state.auth);
   const fileInput = useRef();
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
       onClose();
+      queryClient.invalidateQueries(["user", { username }]);
       navigate("");
     },
   });
@@ -36,6 +39,7 @@ export default function CreatePost({ onClose }) {
   function handleSubmit(event) {
     event.preventDefault();
     const fd = new FormData(event.target);
+    fd.append("folderName", "posts");
     // console.log(fd.get("image"));
     mutate(fd);
   }
@@ -48,6 +52,7 @@ export default function CreatePost({ onClose }) {
         </button>
       </div>
       <Form onSubmit={handleSubmit} encType="multipart/form-data">
+        <input type="hidden" value="posts" name="folderName" />
         <div className="flex flex-col h-[50vh] lg:flex-row ">
           <div className="flex flex-col lg:w-1/2">
             <textarea

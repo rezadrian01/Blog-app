@@ -8,10 +8,11 @@ const { errTemp } = require("../utils/error");
 exports.showUserProfile = async (req, res, next) => {
   try {
     const username = req.params.username;
-    const user = await User.findOne({ name: username }, "-password").populate(
-      "posts",
-      "img"
-    );
+    const user = await User.findOne({ name: username }, "-password")
+      .populate("posts", "img")
+      .populate("followers", "name _id")
+      .populate("followed", "name _id")
+      .populate("posts", "img");
     if (!user) errTemp("User not found", 404);
     res
       .status(200)
@@ -115,6 +116,7 @@ exports.addFollowing = async (req, res, next) => {
     const followedUsername = req.params.username;
     const currentUser = await User.findById(req.userId);
     const followedUser = await User.findOne({ name: followedUsername });
+    console.log(followedUser, currentUser);
     if (!currentUser || !followedUser) errTemp("User not found", 404);
 
     //current user

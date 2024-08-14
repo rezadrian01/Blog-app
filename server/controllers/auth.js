@@ -41,6 +41,7 @@ exports.googleAuthCallback = async (req, res, next) => {
     });
     const { data } = await oauth2.userinfo.get();
     const existingUser = await User.findOne({ email: data.email });
+    data.name = data.name.replace(/\s+/g, "");
     let jwtToken;
     if (!existingUser) {
       const newUser = new User({
@@ -82,7 +83,7 @@ exports.signup = async (req, res, next) => {
     }
     const email = req.body.email;
     const password = req.body.password;
-    const name = req.body.name;
+    const name = req.body.name.replace(/\s+/g, "");
     console.log(email, password, name);
     const existingUser = await User.findOne({ email });
     if (existingUser) {

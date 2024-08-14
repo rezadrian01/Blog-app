@@ -19,6 +19,7 @@ export default function Sidebar() {
     queryKey: ["user", { username }],
     queryFn: ({ signal, queryKey }) =>
       fetchUserProfile({ signal, ...queryKey[1] }),
+    enabled: isLoggedIn,
   });
   const userProfilePhoto = data?.user?.imgProfile;
 
@@ -29,7 +30,6 @@ export default function Sidebar() {
   function handleStopCreatePost() {
     setIsCreatePost(false);
   }
-
   return (
     <>
       {isCreatePost && (

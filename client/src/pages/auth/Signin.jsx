@@ -12,9 +12,10 @@ export default function Signin() {
   const dispatch = useDispatch();
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: signin,
-    onSuccess: (data) => {
-      // console.log(data);
-      dispatch(authActions.login());
+    onSuccess: (data, data2) => {
+      console.log(data, data2);
+
+      dispatch(authActions.login({ username: data.name }));
       navigate("/");
     },
   });

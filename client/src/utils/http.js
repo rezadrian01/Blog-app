@@ -66,6 +66,55 @@ export async function fetchUserProfile({ signal, username }) {
   return resData;
 }
 
+export async function startFollowing(followedUser) {
+  const token = localStorage.getItem("token");
+  if (!token) throw json({ message: "Missing auth token" }, { status: 403 });
+
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/user/addFollowing/${followedUser}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+    }
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: resData.message || "Failed to follow user" },
+      { status: response.status || 500 }
+    );
+  }
+  return resData;
+}
+
+export async function stopFollowing(removedUser) {
+  const token = localStorage.getItem("token");
+  if (!token) throw json({ message: "Missing auth token" }, { status: 403 });
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/user/removeFollowing/${removedUser}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+    }
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: resData.message || "Failed to unfollow user" },
+      {
+        status: response.status || 500,
+      }
+    );
+  }
+  return resData;
+}
+
 export async function createPost(postData) {
   const token = localStorage.getItem("token");
   if (!token) {

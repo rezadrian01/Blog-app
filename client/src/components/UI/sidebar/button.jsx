@@ -12,7 +12,7 @@ export default function SidebarButton({
     <>
       {!onClick && (
         <Link to={to}>
-          <li className="hover:bg-zinc-200 p-3 flex gap-2 items-center rounded">
+          <li className="hover:bg-zinc-200 duration-150 p-3 flex gap-2 items-center rounded">
             <img className={imgClass} src={img} alt={`${content} image`} />
             <span className="text-base">{content}</span>
           </li>
@@ -20,7 +20,7 @@ export default function SidebarButton({
       )}
       {onClick && (
         <button onClick={onClick}>
-          <li className="hover:bg-zinc-200 p-3 flex gap-2 items-center rounded">
+          <li className="hover:bg-zinc-200 duration-150 p-3 flex gap-2 items-center rounded">
             <img className={imgClass} src={img} alt={`${content} image`} />
             <span className="text-base">{content}</span>
           </li>
