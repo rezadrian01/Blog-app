@@ -56,7 +56,11 @@ export default function Signup() {
                     type="button"
                     className="border-2 border-gray-400 px-4 py-2 rounded flex items-center justify-center gap-2"
                   >
-                    <img className="w-7 h-7" src={googleLogo} />
+                    <img
+                      className="w-7 h-7"
+                      alt="Google Logo"
+                      src={googleLogo}
+                    />
                     Signin With Google
                   </button>
                 </>

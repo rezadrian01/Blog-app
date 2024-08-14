@@ -66,7 +66,7 @@ exports.googleAuthCallback = async (req, res, next) => {
       );
     }
     return res.redirect(
-      `${process.env.CLIENT_DOMAIN}/auth/callback?token=${jwtToken}&username=${data.name}`
+      `${process.env.CLIENT_DOMAIN}/auth/google/callback?token=${jwtToken}&username=${data.name}`
     );
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;

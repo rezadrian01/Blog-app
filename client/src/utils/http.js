@@ -43,5 +43,24 @@ export async function signin(authData) {
     );
   }
   localStorage.setItem("token", resData.token);
+  localStorage.setItem("username", resData.name);
+  return resData;
+}
+
+export async function fetchUserProfile({ signal, username }) {
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/user/profile/${username}`
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      {
+        message: resData.message || "Failed to fetch user profile",
+      },
+      {
+        status: response.status || 500,
+      }
+    );
+  }
   return resData;
 }

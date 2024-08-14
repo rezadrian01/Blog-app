@@ -4,9 +4,8 @@ import { useDispatch } from "react-redux";
 import { authActions } from "../store/auth";
 
 export default function RootLayout() {
-  const dispatch = useDispatch();
-  dispatch(authActions.checkAuth());
-  dispatch();
+  // const dispatch = useDispatch();
+  // dispatch(authActions.checkAuth());
   return (
     <div className="flex justify-start">
       <Sidebar />

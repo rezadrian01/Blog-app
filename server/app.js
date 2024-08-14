@@ -54,7 +54,8 @@ const fileFilter = (req, file, cb) => {
 app
   .use(cors())
   .use(bodyParser.json())
-  .use(multer({ storage: fileStorage, fileFilter }).single("image"));
+  .use(multer({ storage: fileStorage, fileFilter }).single("image"))
+  .use("/images", express.static(path.join(__dirname, "images")));
 
 app.use(isAuth);
 

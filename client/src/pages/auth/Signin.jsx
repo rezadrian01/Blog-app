@@ -13,8 +13,8 @@ export default function Signin() {
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: signin,
     onSuccess: (data) => {
-      console.log(data);
-      dispatch(authActions.login({ username: data.name }));
+      // console.log(data);
+      dispatch(authActions.login());
       navigate("/");
     },
   });
@@ -34,6 +34,9 @@ export default function Signin() {
   if (error?.status === 404) {
     errorContent.title = `Email isn't registered!`;
     errorContent.msg = "Please Check Your Email or Create New Account";
+  }
+  function handleGoogleAuth() {
+    window.location.href = `${import.meta.env.VITE_SERVER_DOMAIN}/auth/google`;
   }
 
   return (
@@ -69,10 +72,15 @@ export default function Signin() {
                   </button>
                   {/* <p>or</p> */}
                   <button
+                    onClick={handleGoogleAuth}
                     type="button"
                     className="border-2 border-gray-400 px-4 py-2 rounded flex items-center justify-center gap-2"
                   >
-                    <img className="w-7 h-7" src={googleLogo} />
+                    <img
+                      className="w-7 h-7"
+                      alt="Google Logo"
+                      src={googleLogo}
+                    />
                     Signin With Google
                   </button>
                 </>
