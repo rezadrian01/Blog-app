@@ -41,14 +41,14 @@ export default function App() {
               index: true,
               element: <UserProfile />,
             },
-            {
-              path: "followers",
-              element: <UserFollowers />,
-            },
-            {
-              path: "followed",
-              element: <UserFollowed />,
-            },
+            // {
+            //   path: "followers",
+            //   element: <UserFollowers />,
+            // },
+            // {
+            //   path: "followed",
+            //   element: <UserFollowed />,
+            // },
             {
               path: "edit",
               element: <EditProfile />,

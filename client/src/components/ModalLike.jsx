@@ -6,9 +6,8 @@ export default function ModalLike({ post, toggleLikes, totalLikes }) {
   return (
     <>
       <Modal
-        dialogClass={`bg-slate-100 z-20 p-4 rounded-lg mt-36 w-4/6 md:w-1/3 lg:w-1/4`}
+        dialogClass={`bg-slate-100 z-20 p-4 rounded-lg mt-36 w-4/6 md:w-1/3 lg:w-1/4 fixed`}
         onClose={toggleLikes}
-        w={{ base: "5/6", md: "1/3", lg: "1/4" }}
       >
         <div className="flex flex-col gap-2 relative">
           <button

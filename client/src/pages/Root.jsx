@@ -7,9 +7,9 @@ export default function RootLayout() {
   // const dispatch = useDispatch();
   // dispatch(authActions.checkAuth());
   return (
-    <div className="flex justify-start">
+    <div className="flex justify-start bg-[#fafafa]">
       <Sidebar />
-      <main className="min-h-[200vh] flex-grow bg-[#fafafa]">
+      <main className="min-h-[200vh] mx-auto ">
         <Outlet />
       </main>
     </div>

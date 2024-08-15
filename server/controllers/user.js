@@ -10,8 +10,8 @@ exports.showUserProfile = async (req, res, next) => {
     const username = req.params.username;
     const user = await User.findOne({ name: username }, "-password")
       .populate("posts", "img")
-      .populate("followers", "name _id")
-      .populate("followed", "name _id")
+      .populate("followers", "name _id imgProfile")
+      .populate("followed", "name _id imgProfile")
       .populate("posts", "img");
     if (!user) errTemp("User not found", 404);
     res
@@ -28,13 +28,11 @@ exports.showUserImgProfile = async (req, res, next) => {
     const name = req.params.username;
     const user = await User.findOne({ name }).select("imgProfile");
     if (!user) errTemp("User not found", 404);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Success get image user profile",
-        img: user.imgProfile,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Success get image user profile",
+      img: user.imgProfile,
+    });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);
@@ -76,22 +74,19 @@ exports.showFollowed = async (req, res, next) => {
 exports.searchUser = async (req, res, next) => {
   try {
     const searchTerm = req.params.searchTerm;
-    const users = await User.find(
-      {
-        $or: [
-          {
-            email: { $regex: searchTerm, $options: "i" },
-          },
-          {
-            name: { $regex: searchTerm, $options: "i" },
-          },
-          {
-            bio: { $regex: searchTerm, $options: "i" },
-          },
-        ],
-      },
-      "-password"
-    );
+    const users = await User.find({
+      $or: [
+        {
+          email: { $regex: searchTerm, $options: "i" },
+        },
+        {
+          name: { $regex: searchTerm, $options: "i" },
+        },
+        {
+          bio: { $regex: searchTerm, $options: "i" },
+        },
+      ],
+    }).select("name _id imgProfile bio");
     if (!users) errTemp("User not found", 404);
     res
       .status(200)

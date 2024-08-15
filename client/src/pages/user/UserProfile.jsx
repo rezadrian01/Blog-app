@@ -8,6 +8,8 @@ import {
 } from "../../utils/http";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { pathActions } from "../../store/path";
+import { useEffect, useState } from "react";
+import Follow from "../../components/user/Follow";
 
 export default function UserProfile() {
   const { isLoggedIn, username: currentUser } = useSelector(
@@ -17,8 +19,11 @@ export default function UserProfile() {
   const { username } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const [openedMenu, setOpenedMenu] = useState(null);
   // console.log(location.pathname);
-  dispatch(pathActions.savePreviousPath(location.pathname));
+  useEffect(() => {
+    dispatch(pathActions.savePreviousPath(location.pathname));
+  }, [dispatch, location.pathname]);
   const { data, isPending } = useQuery({
     queryKey: ["user", { username }],
     queryFn: ({ signal, queryKey }) =>
@@ -54,6 +59,16 @@ export default function UserProfile() {
     stopFollowingMutation(username);
   }
 
+  function handleShowFollowersClick() {
+    setOpenedMenu("followers");
+  }
+  function handleShowFollowedClick() {
+    setOpenedMenu("followed");
+  }
+  function closeOpenedMenu() {
+    setOpenedMenu(null);
+  }
+
   if (isPending) {
     return <p className="text-center animate-pulse mt-32">Fetching...</p>;
   }
@@ -74,7 +89,10 @@ export default function UserProfile() {
 
     return (
       <>
-        <header className="flex ml-6 lg:ml-0 md:justify-center gap-8 lg:gap-16 items-start pt-16 lg:text-xl">
+        {openedMenu && (
+          <Follow content={openedMenu} onClose={closeOpenedMenu} />
+        )}
+        <header className="flex flex-col sm:flex-row ml-6 lg:ml-0 md:justify-center gap-8 lg:gap-16 items-start pt-16 lg:text-xl  ">
           <div>
             <img
               className=" w-14 lg:w-20 h-14 lg:h-20 rounded-full"
@@ -85,7 +103,7 @@ export default function UserProfile() {
             <div className="flex flex-col md:flex-row gap-4 lg:gap-8">
               <h2 className="text-xl lg:text-2xl">{user.name}</h2>
               {username === currentUser && (
-                <button className="bg-zinc-200 hover:bg-zinc-300 rounded text-sm p-1 lg:text-base lg:p-2">
+                <button className="bg-zinc-200 hover:bg-zinc-300 rounded text-xs p-1 lg:text-base lg:p-2">
                   Edit Profile
                 </button>
               )}
@@ -124,11 +142,15 @@ export default function UserProfile() {
                 <span>{totalPosts}</span>
               </div>
               <div className=" flex flex-col items-center">
-                <Link to="followers">Followers</Link>
+                <button onClick={handleShowFollowersClick} to="followers">
+                  Followers
+                </button>
                 <span>{totalFollowers}</span>
               </div>
               <div className=" flex flex-col items-center">
-                <Link to="followed">Following</Link>
+                <button onClick={handleShowFollowedClick} to="followed">
+                  Following
+                </button>
                 <span>{totalFollowed}</span>
               </div>
             </div>
@@ -145,13 +167,13 @@ export default function UserProfile() {
             </div>
           </div>
         </header>
-        <section className="mt-20 w-[18rem] sm:w-[30rem] md:w-[39rem] lg:w-[51rem] mx-auto">
-          <div className="grid grid-cols-3 gap-4">
+        <section className="mt-20 w-[19.5rem] sm:w-[30rem] md:w-[39rem] lg:w-[51rem] mx-auto ">
+          <div className="grid grid-cols-3 gap-2">
             {user.posts.map((post) => {
               return (
                 <Link to={`../post/${post._id}`} key={post._id}>
                   <img
-                    className=" object-cover  w-[6rem] sm:w-[10rem] md:w-[13rem] lg:w-[17rem] h-[6rem] sm:h-[10rem] md:h-[13rem] lg:h-[17rem]"
+                    className=" object-cover aspect-square  w-[6.5rem] sm:w-[10rem] md:w-[13rem] lg:w-[17rem] sm:h-[10rem] md:h-[13rem] lg:h-[17rem]"
                     src={`${import.meta.env.VITE_SERVER_DOMAIN}/${post.img}`}
                   />
                 </Link>

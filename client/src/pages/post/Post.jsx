@@ -154,7 +154,7 @@ export default function Post() {
               <div className="w-1/2 lg:w-[35rem] flex flex-col">
                 <div className="overflow-auto h-[18rem] no-scrollbar">
                   <Link className="font-semibold" to={`/${post.userId.name}`}>
-                    {post.userId.name}{" "}
+                    {post.userId.name}
                   </Link>
                   <span>
                     {post.content} Lorem ipsum dolor sit amet consectetur
@@ -165,12 +165,14 @@ export default function Post() {
                     consequatur pariatur?
                   </span>
                   {/* comments */}
-                  <div className="mt-4 border-t-2 border-t-zinc-300 pt-2">
+                  <div className="mt-4 border-t-2 border-t-zinc-300 pt-2 pb-10">
                     {post.comments?.length === 0 && (
-                      <p>This post has no comments yet.</p>
+                      <p className="text-xs text-center text-slate-500 tracking-wide">
+                        This post has no comments yet.
+                      </p>
                     )}
                     {post.comments?.length > 0 && (
-                      <ul className="text-sm flex-col flex gap-2 pb-10">
+                      <ul className="text-sm flex-col flex gap-2 ">
                         {post.comments.map((comment) => {
                           return (
                             <CommentItem key={comment._id} comment={comment} />

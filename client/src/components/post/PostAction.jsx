@@ -65,18 +65,18 @@ export default function PostAction({
           <button onClick={toggleLikes}>{totalLikes} Likes</button>
         </div>
       </div>
-      <div className="ml-20 h-20 relative">
+      <div className="ml-0 lg:ml-20  h-20 relative">
         <Form onSubmit={handleSubmit}>
           <input
             ref={commentField}
-            className="px-2 py-1 outline-none bg-inherit border-b-2 border-b-stone-300 placeholder:text-xs placeholder:leading-10 text-md absolute -top-4 w-full lg:w-11/12"
+            className="px-2 py-1 outline-none bg-inherit border-b-2 border-b-stone-300 placeholder:text-xs placeholder:leading-10 text-md absolute top-6 lg:-top-4 w-full lg:w-11/12"
             type="text"
             name="comment"
             placeholder="Write your comment here..."
           />
           <button
             type="submit"
-            className="absolute w-4 h-4 right-0 -top-1 lg:right-10"
+            className="absolute w-4 h-4 right-0 top-9 lg:-top-1 lg:right-10"
           >
             <img src={sendLogo} />
           </button>

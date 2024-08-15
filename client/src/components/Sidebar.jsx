@@ -40,7 +40,7 @@ export default function Sidebar() {
           <CreatePost onClose={handleStopCreatePost} />
         </Modal>
       )}
-      <div className="h-screen hidden md:inline md:w-44 lg:w-64 md:sticky top-0 p-4 bg-slate-300">
+      <div className="h-screen hidden md:inline md:w-44 lg:w-64 md:sticky top-0 p-4 bg-slate-300 shadow-lg">
         <ul className="flex flex-col justify-between h-full">
           <div className="flex flex-col gap-4 pt-20">
             <h3 className="font-semibold text-2xl px-3 mb-4">Instant Gram</h3>
@@ -66,7 +66,7 @@ export default function Sidebar() {
         </ul>
       </div>
       {/* smaller */}
-      <div className="h-screen w-16 md:hidden md:w-32 lg:w-64 sticky top-0 p-4 bg-slate-300">
+      <div className="h-screen w-16 md:hidden md:w-32 lg:w-64 sticky top-0 p-4 bg-slate-300 shadow-lg">
         <ul className="flex flex-col items-center justify-between h-full">
           <div className="flex flex-col items-center gap-4 pt-24">
             <h3 className="font-semibold invisible text-2xl px-3 mb-4">
@@ -81,7 +81,7 @@ export default function Sidebar() {
                   import.meta.env.VITE_SERVER_DOMAIN
                 }/${userProfilePhoto}`}
                 circleImg
-                to={`${username}`}
+                to={`/${username}`}
               />
             )}
           </div>
