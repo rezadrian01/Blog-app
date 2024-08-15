@@ -1,18 +1,24 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchUserProfile,
   queryClient,
   startFollowing,
   stopFollowing,
 } from "../../utils/http";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { pathActions } from "../../store/path";
 
 export default function UserProfile() {
-  const authState = useSelector((state) => state.auth);
+  const { isLoggedIn, username: currentUser } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
   const { username } = useParams();
   const navigate = useNavigate();
-  const { isLoggedIn, username: currentUser } = authState;
+  const location = useLocation();
+  // console.log(location.pathname);
+  dispatch(pathActions.savePreviousPath(location.pathname));
   const { data, isPending } = useQuery({
     queryKey: ["user", { username }],
     queryFn: ({ signal, queryKey }) =>

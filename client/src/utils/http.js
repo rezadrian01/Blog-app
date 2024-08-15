@@ -174,6 +174,33 @@ export async function fetchPost({ postId, signal }) {
   return resData;
 }
 
+export async function createComment({ postId, formData }) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw json({ message: "Missing token" }, { status: 403 });
+  }
+  const { comment } = formData;
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/post/post/comment/${postId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+      body: JSON.stringify({ comment }),
+    }
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: "Failed to create comment" },
+      { status: response.status || 500 }
+    );
+  }
+  return resData;
+}
+
 export async function startLike(postId) {
   const token = localStorage.getItem("token");
   if (!token) {

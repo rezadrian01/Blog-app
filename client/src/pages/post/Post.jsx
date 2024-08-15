@@ -14,6 +14,9 @@ import closeLogo from "../../assets/close.svg";
 import likeLogo from "../../assets/like.svg";
 import likedLogo from "../../assets/liked.svg";
 import commentLogo from "../../assets/comment.svg";
+import ModalLike from "../../components/ModalLike";
+import CommentItem from "../../components/post/commentItem";
+import PostAction from "../../components/post/PostAction";
 
 export default function Post() {
   const { postId } = useParams();
@@ -21,6 +24,7 @@ export default function Post() {
     like: false,
   });
   const authState = useSelector((state) => state.auth);
+  const pathState = useSelector((state) => state.path);
   const {
     data: postData,
     isPending: isPendingPost,
@@ -80,6 +84,14 @@ export default function Post() {
   const isLike = post.likes.find((user) => {
     return user.name === authState.username;
   });
+  const formattedCreateDate = new Date(post.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }
+  );
 
   function toggleLikes() {
     setModalIsOpen((prevState) => ({ ...prevState, like: !prevState.like }));
@@ -92,70 +104,42 @@ export default function Post() {
   return (
     <>
       {modalIsOpen.like && (
-        <Modal
-          dialogClass={`bg-slate-100 z-20 p-4 rounded-lg mt-36 w-4/6 md:w-1/3 lg:w-1/4`}
-          onClose={toggleLikes}
-          w={{ base: "5/6", md: "1/3", lg: "1/4" }}
-        >
-          <div className="flex flex-col gap-2 relative">
-            <button
-              className="w-5 h-5 absolute -right-3 -top-3"
-              onClick={toggleLikes}
-            >
-              <img src={closeLogo} />
-            </button>
-            <div className="border-b-2 border-b-zinc-300">
-              <h3 className="text-center text-xl">Likes</h3>
-            </div>
-            {totalLikes === 0 && (
-              <p className="text-center">This post has no likes yet.</p>
-            )}
-            {totalLikes > 0 && (
-              <ul className="mt-2">
-                {post.likes.map((like) => {
-                  return (
-                    <li className="flex gap-2 items-center" key={like._id}>
-                      <img
-                        className="w-5 h-5 rounded-full"
-                        src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
-                          like.imgProfile
-                        }`}
-                      />
-                      <Link
-                        to={`${import.meta.env.VITE_SERVER_DOMAIN}/${
-                          like.name
-                        }`}
-                      >
-                        {like.name}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        </Modal>
+        <ModalLike
+          post={post}
+          toggleLikes={toggleLikes}
+          totalLikes={totalLikes}
+        />
       )}
       <div className="">
-        <Link>Back</Link>
-        <div className="bg-neutral-200 flex flex-col md:flex-row justify-center ">
+        <div className="relative bg-neutral-200 flex flex-col md:flex-row justify-center shadow-lg rounded mt-20 w-3/4 mx-auto min-h-[25rem] overflow-hidden">
+          <Link
+            className="absolute w-5 h-5 right-2 top-2"
+            to={pathState.previousPath || "/"}
+          >
+            <img src={closeLogo} />
+          </Link>
           <div className="">
             <img
               className="md:w-[15rem] lg:w-[25rem] md:h-[15rem] lg:h-[25rem] object-cover"
               src={`${import.meta.env.VITE_SERVER_DOMAIN}/${post.img}`}
-              alt="Image of a postW"
+              alt="Image of a post"
             />
           </div>
           <div className=" flex flex-col pl-2 pt-2">
-            <div className="border-b-2 border-b-slate-600 pb-1 flex items-center gap-4 mb-6">
+            <div className="border-b-2 border-b-slate-600 pb-1 flex items-start gap-4 mb-2">
               <img
-                className="w-5 h-5 rounded-full"
+                className="w-5 h-5 rounded-full mt-1"
                 src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
                   post.userId.imgProfile
                 }`}
                 alt="Profile Photo"
               />
-              <Link className="font-semibold">{post.userId.name}</Link>
+              <div className="flex flex-col">
+                <Link className="font-semibold" to={`/${post.userId.name}`}>
+                  {post.userId.name}
+                </Link>
+                <p className="text-xs">{formattedCreateDate}</p>
+              </div>
             </div>
             <div className="flex gap-4 items-start">
               <div>
@@ -169,7 +153,9 @@ export default function Post() {
               </div>
               <div className="w-1/2 lg:w-[35rem] flex flex-col">
                 <div className="overflow-auto h-[18rem] no-scrollbar">
-                  <Link className="font-semibold">{post.userId.name} </Link>
+                  <Link className="font-semibold" to={`/${post.userId.name}`}>
+                    {post.userId.name}{" "}
+                  </Link>
                   <span>
                     {post.content} Lorem ipsum dolor sit amet consectetur
                     adipisicing elit. Natus laboriosam atque quam fugiat
@@ -179,28 +165,27 @@ export default function Post() {
                     consequatur pariatur?
                   </span>
                   {/* comments */}
-                </div>
-                <div className="relative border-t-2 border-t-zinc-300 bottom-6">
-                  <div className="flex gap-3 items-center">
-                    <button className="" onClick={handleLikeAction}>
-                      <img
-                        className="w-6 h-6 mt-2 "
-                        src={isLike ? likedLogo : likeLogo}
-                        alt="Like logo"
-                      />
-                    </button>
-                    <button className="">
-                      <img
-                        className="w-6 h-6 mt-2 "
-                        src={commentLogo}
-                        alt="Like logo"
-                      />
-                    </button>
-                  </div>
-                  <div className="absolute">
-                    <button onClick={toggleLikes}>{totalLikes} Likes</button>
+                  <div className="mt-4 border-t-2 border-t-zinc-300 pt-2">
+                    {post.comments?.length === 0 && (
+                      <p>This post has no comments yet.</p>
+                    )}
+                    {post.comments?.length > 0 && (
+                      <ul className="text-sm flex-col flex gap-2 pb-10">
+                        {post.comments.map((comment) => {
+                          return (
+                            <CommentItem key={comment._id} comment={comment} />
+                          );
+                        })}
+                      </ul>
+                    )}
                   </div>
                 </div>
+                <PostAction
+                  handleLikeAction={handleLikeAction}
+                  isLike={isLike}
+                  toggleLikes={toggleLikes}
+                  totalLikes={totalLikes}
+                />
               </div>
             </div>
           </div>

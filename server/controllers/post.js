@@ -80,7 +80,7 @@ exports.fetchPost = async (req, res, next) => {
     if (!post) errTemp("Post not found", 404);
     const comments = await Comment.find({ postId }).populate(
       "userId",
-      "name _id"
+      "name _id imgProfile"
     );
     post = post.toObject();
     post.comments = comments;
