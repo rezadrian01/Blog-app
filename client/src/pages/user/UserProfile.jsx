@@ -28,18 +28,19 @@ export default function UserProfile() {
     queryKey: ["user", { username }],
     queryFn: ({ signal, queryKey }) =>
       fetchUserProfile({ signal, ...queryKey[1] }),
+    staleTime: 10000,
   });
   const { mutate, isError } = useMutation({
     mutationFn: startFollowing,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", { username }] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 
   const { mutate: stopFollowingMutation } = useMutation({
     mutationFn: stopFollowing,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", { username }] });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 
@@ -95,7 +96,7 @@ export default function UserProfile() {
         <header className="flex flex-col sm:flex-row ml-6 lg:ml-0 md:justify-center gap-8 lg:gap-16 items-start pt-16 lg:text-xl  ">
           <div>
             <img
-              className=" w-14 lg:w-20 h-14 lg:h-20 rounded-full"
+              className=" w-14 lg:w-20 aspect-square object-cover rounded-full"
               src={`${import.meta.env.VITE_SERVER_DOMAIN}/${user.imgProfile} `}
             />
           </div>
@@ -103,9 +104,12 @@ export default function UserProfile() {
             <div className="flex flex-col md:flex-row gap-4 lg:gap-8">
               <h2 className="text-xl lg:text-2xl">{user.name}</h2>
               {username === currentUser && (
-                <button className="bg-zinc-200 hover:bg-zinc-300 rounded text-xs p-1 lg:text-base lg:p-2">
+                <Link
+                  to="/accounts/edit"
+                  className="bg-zinc-200 hover:bg-zinc-300 rounded text-xs p-1 lg:text-base lg:p-2"
+                >
                   Edit Profile
-                </button>
+                </Link>
               )}
               {username !== currentUser && (
                 <>
@@ -155,15 +159,7 @@ export default function UserProfile() {
               </div>
             </div>
             <div className="w-full">
-              <p className="text-[.8rem] leading-[1.25rem]">
-                {user.bio} Lorem, ipsum dolor sit amet consectetur adipisicing
-                elit. Quisquam asperiores inventore aliquid provident voluptatem
-                alias laboriosam quos perferendis quasi? Dolor, veritatis
-                voluptas minus corrupti obcaecati reiciendis, accusantium nulla
-                voluptatum, amet blanditiis provident saepe? Dolor accusantium
-                provident suscipit reiciendis iste voluptatem saepe tenetur?
-                Modi sint natus perspiciatis nihil enim consectetur placeat!
-              </p>
+              <p className="text-[.9rem] leading-[1.25rem]">{user.bio}</p>
             </div>
           </div>
         </header>

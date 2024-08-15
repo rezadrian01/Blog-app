@@ -7,7 +7,9 @@ export default function SidebarButton({
   circleImg,
   to,
 }) {
-  let imgClass = `w-6 h-6 ${circleImg ? "rounded-full" : null}`;
+  let imgClass = `w-6 aspect-square object-cover ${
+    circleImg ? "rounded-full" : null
+  }`;
   return (
     <>
       {!onClick && (

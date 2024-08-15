@@ -27,12 +27,12 @@ export default function Follow({ content, onClose }) {
             <img className=" w-5 h-5" src={closeLogo} alt="Close" />
           </button>
         </div>
-        <ul className="flex flex-col mt-2">
+        <ul className="flex flex-col gap-2 mt-3">
           {(content === "followers" ? followers : followed).map((user) => {
             return (
               <li className="flex gap-2 items-center" key={user._id}>
                 <img
-                  className="w-5 h-5 rounded-full"
+                  className="w-5 aspect-square object-cover rounded-full"
                   src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
                     user.imgProfile
                   }`}

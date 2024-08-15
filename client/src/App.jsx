@@ -13,7 +13,7 @@ import Post from "./pages/post/Post";
 import UserProfile from "./pages/user/UserProfile";
 import UserFollowers from "./pages/user/Followers";
 import UserFollowed from "./pages/user/Followed";
-import EditProfile from "./pages/user/EditProfile";
+import EditUserProfile from "./pages/user/EditProfile";
 import UserSearch from "./pages/user/UserSearch";
 
 export default function App() {
@@ -35,6 +35,10 @@ export default function App() {
           element: <UserSearch />,
         },
         {
+          path: "/accounts/edit",
+          element: <EditUserProfile />,
+        },
+        {
           path: ":username",
           children: [
             {
@@ -49,10 +53,6 @@ export default function App() {
             //   path: "followed",
             //   element: <UserFollowed />,
             // },
-            {
-              path: "edit",
-              element: <EditProfile />,
-            },
           ],
         },
       ],

@@ -59,9 +59,11 @@ export default function Post() {
       await queryClient.cancelQueries({ queryKey: ["post", { postId }] });
       const previousValue = queryClient.getQueryData(["post", { postId }]);
       const updatedValue = { ...previousValue };
-      updatedValue.post.likes.push({
-        name: authState.username,
-      });
+      const postLikes = [...updatedValue.post.likes];
+      const updatedPostLikes = postLikes.filter(
+        (like) => like.name !== authState.username
+      );
+      updatedValue.post.likes = [...updatedPostLikes];
       queryClient.setQueryData(["post", { postId }], updatedValue);
       return { previousValue };
     },
@@ -111,7 +113,7 @@ export default function Post() {
         />
       )}
       <div className="">
-        <div className="relative bg-neutral-200 flex flex-col md:flex-row justify-center shadow-lg rounded mt-20 w-3/4 mx-auto min-h-[25rem] overflow-hidden">
+        <div className="relative bg-neutral-200 flex flex-col items-center xl:flex-row justify-center shadow-lg rounded mt-20 w-3/4 mx-auto min-h-[25rem] overflow-hidden">
           <Link
             className="absolute w-5 h-5 right-2 top-2"
             to={pathState.previousPath || "/"}
@@ -120,7 +122,7 @@ export default function Post() {
           </Link>
           <div className="">
             <img
-              className="md:w-[15rem] lg:w-[25rem] md:h-[15rem] lg:h-[25rem] object-cover"
+              className="md:w-[15rem] lg:w-[25rem] aspect-square object-cover"
               src={`${import.meta.env.VITE_SERVER_DOMAIN}/${post.img}`}
               alt="Image of a post"
             />
@@ -151,7 +153,7 @@ export default function Post() {
                   alt="Profile Photo"
                 />
               </div>
-              <div className="w-1/2 lg:w-[35rem] flex flex-col">
+              <div className="w-3/4 lg:w-[35rem] flex flex-col">
                 <div className="overflow-auto h-[18rem] no-scrollbar">
                   <Link className="font-semibold" to={`/${post.userId.name}`}>
                     {post.userId.name}

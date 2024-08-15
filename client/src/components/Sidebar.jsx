@@ -66,7 +66,7 @@ export default function Sidebar() {
         </ul>
       </div>
       {/* smaller */}
-      <div className="h-screen w-16 md:hidden md:w-32 lg:w-64 sticky top-0 p-4 bg-slate-300 shadow-lg">
+      <div className="h-screen w-16 md:hidden md:w-32 lg:w-80 sticky top-0 p-4 bg-slate-300 shadow-lg">
         <ul className="flex flex-col items-center justify-between h-full">
           <div className="flex flex-col items-center gap-4 pt-24">
             <h3 className="font-semibold invisible text-2xl px-3 mb-4">

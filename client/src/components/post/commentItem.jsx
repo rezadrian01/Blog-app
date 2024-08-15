@@ -17,8 +17,8 @@ export default function CommentItem({ comment }) {
           comment.userId.imgProfile
         }`}
       />
-      <div className="flex flex-col w-full">
-        <div className="flex gap-4 items-center justify-between">
+      <div className="flex flex-col w-full lg:pr-4">
+        <div className="flex md:gap-4 flex-col md:flex-row items-center justify-between">
           <Link className="font-semibold" to={`../../${comment.userId.name}`}>
             {comment.userId.name}
           </Link>

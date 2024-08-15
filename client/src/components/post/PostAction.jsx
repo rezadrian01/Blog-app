@@ -65,7 +65,7 @@ export default function PostAction({
           <button onClick={toggleLikes}>{totalLikes} Likes</button>
         </div>
       </div>
-      <div className="ml-0 lg:ml-20  h-20 relative">
+      <div className="ml-0 lg:ml-20  h-20 relative text-xs md:text-base">
         <Form onSubmit={handleSubmit}>
           <input
             ref={commentField}
@@ -76,7 +76,7 @@ export default function PostAction({
           />
           <button
             type="submit"
-            className="absolute w-4 h-4 right-0 top-9 lg:-top-1 lg:right-10"
+            className="absolute w-4 h-4 -right-4 top-7 md:top-9 lg:-top-1 lg:right-5"
           >
             <img src={sendLogo} />
           </button>

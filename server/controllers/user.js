@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const { errTemp } = require("../utils/error");
+const { deleteFile } = require("../utils/file");
 
 //show user profile
 //search followers and following
@@ -99,17 +100,27 @@ exports.searchUser = async (req, res, next) => {
 
 exports.updateUserProfile = async (req, res, next) => {
   try {
-    if (!req.isAuth || req.userId) errTemp("Not Authorized", 403);
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
     const user = await User.findById(req.userId);
     if (!user) errTemp("User not found", 404);
 
     const newBio = req.body.bio || "";
     const newName = req.body.name || user.name;
-    if (req.body.password) {
-      const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    //add email
+    if (req.body.newPassword && req.body.newPassword !== "") {
+      const oldPassword = req.body.oldPassword;
+      const oldPasswordIsCorrect = await bcrypt.compare(
+        oldPassword,
+        user.password
+      );
+      if (!oldPasswordIsCorrect) {
+        errTemp("Wrong Password", 422);
+      }
+      const hashedPassword = await bcrypt.hash(req.body.newPassword, 12);
       user.password = hashedPassword;
     }
     if (req.file) {
+      deleteFile(user.imgProfile);
       user.imgProfile = req.file.path.replace(/\\/g, "/");
     }
     user.bio = newBio;
