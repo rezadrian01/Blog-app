@@ -212,6 +212,32 @@ export async function fetchPost({ postId, signal }) {
   return resData;
 }
 
+export async function editPost({ postId, content }) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw json({ message: "Mising token" }, { status403 });
+  }
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/post/post/${postId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+      body: JSON.stringify({ content }),
+    }
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: resData.messsage || "Failed to update post" },
+      { status: response.status || 500 }
+    );
+  }
+  return resData;
+}
+
 export async function createComment({ postId, formData }) {
   const token = localStorage.getItem("token");
   if (!token) {

@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import {
+  editPost,
   fetchPost,
   fetchUserImgProfile,
   queryClient,
@@ -8,7 +9,7 @@ import {
   stopLike,
 } from "../../utils/http";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Modal from "../../components/UI/Modal";
 import closeLogo from "../../assets/close.svg";
 import likeLogo from "../../assets/like.svg";
@@ -17,12 +18,21 @@ import commentLogo from "../../assets/comment.svg";
 import ModalLike from "../../components/ModalLike";
 import CommentItem from "../../components/post/commentItem";
 import PostAction from "../../components/post/PostAction";
+import horizontalDotButton from "../../assets/horizontalDot.svg";
+import OptionMenu from "../../components/post/Option";
 
 export default function Post() {
   const { postId } = useParams();
+  const editPostInput = useRef();
   const [modalIsOpen, setModalIsOpen] = useState({
     like: false,
   });
+  const [optionMenu, setOptionMenu] = useState({
+    isOpenOption: false,
+    isEditPost: false,
+    isDeletePost: false,
+  });
+  const [editPostValue, setEditPostValue] = useState(null);
   const authState = useSelector((state) => state.auth);
   const pathState = useSelector((state) => state.path);
   const {
@@ -34,6 +44,7 @@ export default function Post() {
     queryKey: ["post", { postId }],
     queryFn: ({ signal, queryKey }) => fetchPost({ signal, ...queryKey[1] }),
   });
+  // console.log(postData);
   const { mutate: startLikeMutate, isError: startLikeIsError } = useMutation({
     mutationFn: startLike,
     onMutate: async (data) => {
@@ -74,9 +85,35 @@ export default function Post() {
       queryClient.invalidateQueries({ queryKey: ["post", { postId }] });
     },
   });
+  const { mutate: editPostMutate } = useMutation({
+    mutationFn: editPost,
+    onMutate: async (data) => {
+      await queryClient.cancelQueries(["post", { postId }]);
+      const previousValue = queryClient.getQueryData(["post", { postId }]);
+      // console.log(previousValue)
+      const updatedValue = { ...previousValue };
+      updatedValue.post.content = data.content;
+      queryClient.setQueryData(["post", { postId }], updatedValue);
+      return { previousValue };
+    },
+    onError: (error, data, context) => {
+      queryClient.setQueryData(["post", { postId }], context.previousValue);
+    },
+    onSettled: () => {
+      setOptionMenu("isEditPost");
+      queryClient.invalidateQueries({ queryKey: ["post", { postId }] });
+    },
+  });
 
   if (isPendingPost) {
     return <p className="text-center animate-pulse">Fetching post...</p>;
+  }
+
+  function toggleOptionMenu(identifier) {
+    setOptionMenu((prevState) => ({
+      ...prevState,
+      [identifier]: !prevState[identifier],
+    }));
   }
 
   const { post } = postData;
@@ -102,6 +139,11 @@ export default function Post() {
     isLike ? stopLikeMutate(postId) : startLikeMutate(postId);
   }
 
+  function handleSubmitEditPost() {
+    // setEditPostValue(editPostInput.current.value)
+    editPostMutate({ postId, content: editPostInput.current.value });
+  }
+
   // many functionality!
   return (
     <>
@@ -112,14 +154,18 @@ export default function Post() {
           totalLikes={totalLikes}
         />
       )}
+      {optionMenu.isOpenOption && (
+        <OptionMenu toggleOptionMenu={toggleOptionMenu} />
+      )}
       <div className="">
-        <div className="relative bg-neutral-200 flex flex-col xl:flex-row xl:justify-evenly items-center justify-center shadow-lg rounded mt-5 lg:mt-20 w-11/12 lg:w-3/4 mx-auto min-h-[25rem] overflow-hidden">
+        <div className="relative bg-neutral-200 flex flex-col xl:flex-row xl:justify-evenly items-center justify-center shadow-lg rounded mt-5 lg:mt-20 w-11/12 lg:w-3/4 mx-auto min-h-[25rem] ">
           <Link
             className="absolute w-5 h-5 right-2 top-2"
             to={pathState.previousPath || "/"}
           >
             <img src={closeLogo} />
           </Link>
+
           <div className="">
             <img
               className="md:w-[15rem] lg:w-[25rem] aspect-square object-cover"
@@ -137,11 +183,19 @@ export default function Post() {
                 }`}
                 alt="Profile Photo"
               />
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full">
                 <Link className="font-semibold" to={`/${post.userId.name}`}>
                   {post.userId.name}
                 </Link>
-                <p className="text-xs">{formattedCreateDate}</p>
+                <div className="flex justify-between ">
+                  <p className="text-xs">{formattedCreateDate}</p>
+                  <button
+                    className="w-5 h-5 aspect-square mr-2"
+                    onClick={() => toggleOptionMenu("isOpenOption")}
+                  >
+                    <img src={horizontalDotButton} />
+                  </button>
+                </div>
               </div>
             </div>
             {/* content post */}
@@ -160,14 +214,20 @@ export default function Post() {
                   <Link className="font-semibold" to={`/${post.userId.name}`}>
                     {post.userId.name}{" "}
                   </Link>
-                  <span>
-                    {post.content} Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Natus laboriosam atque quam fugiat
-                    corporis eaque libero similique enim temporibus nemo unde
-                    quos quod nobis, alias esse voluptate, incidunt placeat quae
-                    consectetur, saepe soluta quo? Provident enim ratione esse
-                    consequatur pariatur?
-                  </span>
+                  {!optionMenu.isEditPost && <span>{post.content}</span>}
+                  {optionMenu.isEditPost && (
+                    <>
+                      <textarea
+                        ref={editPostInput}
+                        defaultValue={`${post.content}`}
+                        className="bg-inherit outline-none w-full no-scrollbar border-2 border-slate-600 px-1 rounded"
+                      ></textarea>
+                      <div className="flex gap-2 text-xs justify-end mr-2">
+                        <button>Cancel</button>
+                        <button onClick={handleSubmitEditPost}>Save</button>
+                      </div>
+                    </>
+                  )}
                   {/* comments */}
                   <div className="mt-4 border-t-2 border-t-zinc-300 pt-2 pb-10">
                     {post.comments?.length === 0 && (
