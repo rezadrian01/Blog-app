@@ -10,6 +10,7 @@ export default function SidebarButton({
   let imgClass = `w-6 aspect-square object-cover ${
     circleImg ? "rounded-full" : null
   }`;
+  // console.log(img, content, onClick, circleImg, to);
   return (
     <>
       {!onClick && (

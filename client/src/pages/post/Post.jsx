@@ -127,6 +127,7 @@ export default function Post() {
               alt="Image of a post"
             />
           </div>
+          {/* post header */}
           <div className=" flex flex-col pl-2 pt-2">
             <div className="border-b-2 border-b-slate-600 pb-1 flex items-start gap-4 mb-2">
               <img
@@ -143,6 +144,7 @@ export default function Post() {
                 <p className="text-xs">{formattedCreateDate}</p>
               </div>
             </div>
+            {/* content post */}
             <div className="flex gap-4 items-start">
               <div>
                 <img
@@ -156,7 +158,7 @@ export default function Post() {
               <div className="w-3/4 lg:w-[35rem] flex flex-col">
                 <div className="overflow-auto h-[18rem] no-scrollbar">
                   <Link className="font-semibold" to={`/${post.userId.name}`}>
-                    {post.userId.name}
+                    {post.userId.name}{" "}
                   </Link>
                   <span>
                     {post.content} Lorem ipsum dolor sit amet consectetur

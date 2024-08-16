@@ -140,7 +140,6 @@ exports.addFollowing = async (req, res, next) => {
     const followedUsername = req.params.username;
     const currentUser = await User.findById(req.userId);
     const followedUser = await User.findOne({ name: followedUsername });
-    console.log(followedUser, currentUser);
     if (!currentUser || !followedUser) errTemp("User not found", 404);
 
     //current user

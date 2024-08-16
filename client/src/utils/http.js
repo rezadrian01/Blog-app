@@ -104,6 +104,21 @@ export async function updateUserProfile(formData) {
   return resData;
 }
 
+export async function searchUser({ signal, searchTerm }) {
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/user/search/${searchTerm}`,
+    { signal }
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: resData.message || "Failed to search user" },
+      { status: response.status || 500 }
+    );
+  }
+  return resData;
+}
+
 export async function startFollowing(followedUser) {
   const token = localStorage.getItem("token");
   if (!token) throw json({ message: "Missing auth token" }, { status: 403 });

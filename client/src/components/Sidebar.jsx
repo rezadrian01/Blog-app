@@ -45,7 +45,7 @@ export default function Sidebar() {
           <div className="flex flex-col gap-4 pt-20">
             <h3 className="font-semibold text-2xl px-3 mb-4">Instant Gram</h3>
             <SidebarButton img={homeImg} content="Home" />
-            <SidebarButton img={searchImg} content="Search" />
+            <SidebarButton img={searchImg} content="Search" to="/search-user" />
             <SidebarButton
               img={createPost}
               content="Create"
@@ -73,7 +73,7 @@ export default function Sidebar() {
               Instant Gram
             </h3>
             <SidebarButton img={homeImg} />
-            <SidebarButton img={searchImg} />
+            <SidebarButton img={searchImg} to="/search-user" />
             <SidebarButton img={createPost} onClick={handleStartCreatePost} />
             {isLoggedIn && (
               <SidebarButton

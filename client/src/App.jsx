@@ -14,7 +14,7 @@ import UserProfile from "./pages/user/UserProfile";
 import UserFollowers from "./pages/user/Followers";
 import UserFollowed from "./pages/user/Followed";
 import EditUserProfile from "./pages/user/EditProfile";
-import UserSearch from "./pages/user/UserSearch";
+import SearchUser from "./pages/user/SearchUser";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -31,8 +31,8 @@ export default function App() {
           element: <Post />,
         },
         {
-          path: "user-search",
-          element: <UserSearch />,
+          path: "search-user",
+          element: <SearchUser />,
         },
         {
           path: "/accounts/edit",

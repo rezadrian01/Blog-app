@@ -8,7 +8,7 @@ import {
 } from "../../utils/http";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { pathActions } from "../../store/path";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Follow from "../../components/user/Follow";
 
 export default function UserProfile() {
