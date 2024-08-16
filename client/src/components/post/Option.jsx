@@ -1,7 +1,14 @@
 import Modal from "../UI/Modal";
 import closeLogo from "../../assets/close.svg";
 
-export default function OptionMenu({ toggleOptionMenu }) {
+export default function OptionMenu({ toggleOptionMenu, onDelete }) {
+  function handleDelete() {
+    const proceed = window.confirm("Are you sure?");
+    if (!proceed) {
+      return;
+    }
+    onDelete();
+  }
   return (
     <Modal
       onClose={() => toggleOptionMenu("isOpenOption")}
@@ -27,7 +34,10 @@ export default function OptionMenu({ toggleOptionMenu }) {
           >
             Edit
           </button>
-          <button className="border-2 border-transparent hover:border-zinc-300 duration-100  rounded-lg py-2">
+          <button
+            onClick={handleDelete}
+            className="border-2 border-transparent hover:border-zinc-300 duration-100  rounded-lg py-2"
+          >
             Delete
           </button>
         </div>

@@ -11,20 +11,16 @@ export default function CreatePost({ onClose }) {
   const fileInput = useRef();
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: createPost,
+    // onError: (data, data2, data3) => {
+    //   console.log(data, data2, data3);
+    // },
     onSuccess: () => {
       onClose();
       queryClient.invalidateQueries(["user", { username }]);
-      navigate("");
+      navigate(`/${username}`);
     },
   });
 
-  useEffect(() => {
-    return () => {
-      if (previewImg) {
-        URL.revokeObjectURL(previewImg);
-      }
-    };
-  }, [previewImg]);
   function handleFileInputClick() {
     fileInput.current.click();
   }
@@ -33,6 +29,7 @@ export default function CreatePost({ onClose }) {
     if (!file) {
       return;
     }
+    // console.log(file);
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setPreviewImg(fileReader.result);
@@ -42,14 +39,16 @@ export default function CreatePost({ onClose }) {
   function handleSubmit(event) {
     event.preventDefault();
     const fd = new FormData(event.target);
-    fd.append("folderName", "posts");
+    const data = Object.fromEntries(fd.entries());
+
+    // fd.append("folderName", "posts");
     // console.log(fd.get("image"));
     mutate(fd);
   }
   return (
     <>
       <div className="border-b-2 border-b-slate-700 pb-2 mb-4 flex justify-between relative">
-        <h2 className="text-2xl  ">Create Post</h2>
+        <h2 className="text-2xl">Create Post</h2>
         <button onClick={onClose}>
           <img className="w-6 h-6 absolute -right-4 -top-4" src={closeLogo} />
         </button>
@@ -65,6 +64,13 @@ export default function CreatePost({ onClose }) {
             />
           </div>
           <div className="flex-grow">
+            <input
+              className="hidden"
+              onChange={handleFileInputChange}
+              type="file"
+              name="image"
+              ref={fileInput}
+            />
             <div className="grid items-center  h-full">
               {previewImg && (
                 <img
@@ -81,13 +87,6 @@ export default function CreatePost({ onClose }) {
                   >
                     Add File
                   </button>
-                  <input
-                    className="hidden"
-                    onChange={handleFileInputChange}
-                    type="file"
-                    name="image"
-                    ref={fileInput}
-                  />
                 </>
               )}
             </div>

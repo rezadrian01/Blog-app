@@ -20,6 +20,7 @@ exports.createPost = async (req, res, next) => {
 
     const img = req.file.path.replace(/\\/g, "/");
     const content = req.body.content;
+    console.log(content, img);
     const newPost = new Post({
       userId: user._id,
       img,
@@ -124,12 +125,12 @@ exports.deletePost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
     //validation
-    if (!req.isAuth || !res.userId) errTemp("Not Authorized", 403);
+    if (!req.isAuth || !req.userId) errTemp("Not Authorized", 403);
     const post = await Post.findById(postId);
     const user = await User.findById(req.userId);
     if (!user || !post) errTemp("User or Post is not found", 404);
     //cek userId with userId in post
-
+    //delete postId in likedPosts on each users
     user.posts.pull(postId);
     await user.save();
     await deleteFile(post.img);

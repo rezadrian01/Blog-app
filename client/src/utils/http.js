@@ -82,6 +82,7 @@ export async function fetchUserImgProfile({ username, signal }) {
 }
 
 export async function updateUserProfile(formData) {
+  // console.log(formData);
   const token = localStorage.getItem("token");
   if (!token) throw json({ message: "Missing auth token" }, { status: 403 });
   const response = await fetch(
@@ -170,9 +171,7 @@ export async function stopFollowing(removedUser) {
 
 export async function createPost(postData) {
   const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error();
-  }
+  if (!token) throw json({ message: "Missing auth token" }, { status: 403 });
   const response = await fetch(
     `${import.meta.env.VITE_SERVER_DOMAIN}/post/post`,
     {
@@ -184,6 +183,7 @@ export async function createPost(postData) {
     }
   );
   const resData = await response.json();
+  // console.log(response, resData);
   if (!response.ok) {
     throw json(
       {
@@ -214,9 +214,7 @@ export async function fetchPost({ postId, signal }) {
 
 export async function editPost({ postId, content }) {
   const token = localStorage.getItem("token");
-  if (!token) {
-    throw json({ message: "Mising token" }, { status403 });
-  }
+  if (!token) throw json({ message: "Missing auth token" }, { status: 403 });
   const response = await fetch(
     `${import.meta.env.VITE_SERVER_DOMAIN}/post/post/${postId}`,
     {
@@ -232,6 +230,29 @@ export async function editPost({ postId, content }) {
   if (!response.ok) {
     throw json(
       { message: resData.messsage || "Failed to update post" },
+      { status: response.status || 500 }
+    );
+  }
+  return resData;
+}
+
+export async function deletePost(postId) {
+  const token = localStorage.getItem("token");
+  if (!token) throw json({ message: "Missing auth token" }, { status: 403 });
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_DOMAIN}/post/post/${postId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      },
+    }
+  );
+  const resData = await response.json();
+  if (!response.ok) {
+    throw json(
+      { message: resData.message || "Failed to delete post" },
       { status: response.status || 500 }
     );
   }

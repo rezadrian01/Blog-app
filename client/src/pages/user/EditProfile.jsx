@@ -21,7 +21,7 @@ export default function EditUserProfile() {
     queryFn: ({ signal, queryKey }) =>
       fetchUserProfile({ signal, ...queryKey[1] }),
   });
-  // console.log(data);
+  console.log(data);
   const {
     mutate,
     isPending: isPendingUpdateProfile,

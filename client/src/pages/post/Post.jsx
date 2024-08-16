@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
+  deletePost,
   editPost,
   fetchPost,
   fetchUserImgProfile,
@@ -24,6 +25,7 @@ import OptionMenu from "../../components/post/Option";
 export default function Post() {
   const { postId } = useParams();
   const editPostInput = useRef();
+  const navigate = useNavigate();
   const [modalIsOpen, setModalIsOpen] = useState({
     like: false,
   });
@@ -104,6 +106,16 @@ export default function Post() {
       queryClient.invalidateQueries({ queryKey: ["post", { postId }] });
     },
   });
+  const { mutate: deletePostMutate } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      toggleOptionMenu("isOpenOption");
+      queryClient.invalidateQueries({
+        queryKey: ["user", { username: authState.username }],
+      });
+      navigate(`/${username}`);
+    },
+  });
 
   if (isPendingPost) {
     return <p className="text-center animate-pulse">Fetching post...</p>;
@@ -143,6 +155,9 @@ export default function Post() {
     // setEditPostValue(editPostInput.current.value)
     editPostMutate({ postId, content: editPostInput.current.value });
   }
+  function handleDeletePost() {
+    deletePostMutate(postId);
+  }
 
   // many functionality!
   return (
@@ -155,7 +170,10 @@ export default function Post() {
         />
       )}
       {optionMenu.isOpenOption && (
-        <OptionMenu toggleOptionMenu={toggleOptionMenu} />
+        <OptionMenu
+          toggleOptionMenu={toggleOptionMenu}
+          onDelete={handleDeletePost}
+        />
       )}
       <div className="">
         <div className="relative bg-neutral-200 flex flex-col xl:flex-row xl:justify-evenly items-center justify-center shadow-lg rounded mt-5 lg:mt-20 w-11/12 lg:w-3/4 mx-auto min-h-[25rem] ">
