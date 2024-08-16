@@ -131,7 +131,7 @@ export default function Post() {
           <div className=" flex flex-col pl-2 pt-2">
             <div className="border-b-2 border-b-slate-600 pb-1 flex items-start gap-4 mb-2">
               <img
-                className="w-5 h-5 rounded-full mt-1"
+                className="w-5 aspect-square object-cover rounded-full mt-1"
                 src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
                   post.userId.imgProfile
                 }`}
@@ -148,7 +148,7 @@ export default function Post() {
             <div className="flex gap-4 items-start">
               <div>
                 <img
-                  className="w-5 h-5 rounded-full mt-1"
+                  className="w-5 aspect-square object-cover rounded-full mt-1"
                   src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
                     post.userId.imgProfile
                   }`}
@@ -176,7 +176,7 @@ export default function Post() {
                       </p>
                     )}
                     {post.comments?.length > 0 && (
-                      <ul className="text-sm flex-col flex gap-2 ">
+                      <ul className="text-sm flex-col  flex gap-2 ">
                         {post.comments.map((comment) => {
                           return (
                             <CommentItem key={comment._id} comment={comment} />

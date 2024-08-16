@@ -9,7 +9,7 @@ export default function RootLayout() {
   return (
     <div className="flex justify-start bg-[#fafafa]">
       <Sidebar />
-      <main className="min-h-[200vh] mx-auto lg:w-[80%] text-slate-700">
+      <main className="min-h-[200vh] mx-auto w-[90%] lg:w-[80%] text-slate-700">
         <Outlet />
       </main>
     </div>

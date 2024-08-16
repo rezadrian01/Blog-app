@@ -20,8 +20,8 @@ export default function SearchUser() {
     setSearchTerm(searchTermInput.current.value);
   }
   return (
-    <div className="bg-neutral-200 pt-10 shadow-lg rounded mt-20 w-full mx-auto min-h-[25rem] flex flex-col items-center">
-      <div className=" w-full lg:w-1/2">
+    <div className="bg-neutral-200 pt-10 shadow-lg rounded mt-20 w-11/12 lg:w-3/4 mx-auto min-h-[25rem] flex flex-col items-center">
+      <div className=" w-11/12 lg:w-1/2">
         <div className="relative ">
           <input
             ref={searchTermInput}
@@ -39,7 +39,7 @@ export default function SearchUser() {
         </div>
       </div>
       {data?.users?.length > 0 && searchTerm && (
-        <ul className="w-full lg:w-1/2 mt-6 bg-stone-300 p-3 rounded shadow-lg flex flex-col gap-4">
+        <ul className="w-11/12 lg:w-1/2 mt-6 bg-stone-300 p-3 rounded shadow-lg flex flex-col gap-4">
           {data.users.map((user) => {
             return (
               <li key={user._id}>
@@ -53,7 +53,7 @@ export default function SearchUser() {
                       user.imgProfile
                     }`}
                   />
-                  <h3 className="text-[.8rem]">{user.name}</h3>
+                  <h3 className="text-[.8rem] md:text-base">{user.name}</h3>
                 </Link>
               </li>
             );

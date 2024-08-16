@@ -29,12 +29,15 @@ export default function CreatePost({ onClose }) {
     fileInput.current.click();
   }
   function handleFileInputChange(event) {
-    console.log(event);
     const file = event.target.files[0];
-    if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      setPreviewImg(fileUrl);
+    if (!file) {
+      return;
     }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewImg(fileReader.result);
+    };
+    fileReader.readAsDataURL(file);
   }
   function handleSubmit(event) {
     event.preventDefault();
@@ -53,7 +56,7 @@ export default function CreatePost({ onClose }) {
       </div>
       <Form onSubmit={handleSubmit} encType="multipart/form-data">
         <input type="hidden" value="posts" name="folderName" />
-        <div className="flex flex-col h-[50vh] lg:flex-row ">
+        <div className="flex flex-col gap-4 h-[50vh] lg:flex-row ">
           <div className="flex flex-col lg:w-1/2">
             <textarea
               className="w-full lg:h-20 p-2 outline-none"
@@ -62,11 +65,11 @@ export default function CreatePost({ onClose }) {
             />
           </div>
           <div className="flex-grow">
-            <div className="grid items-center h-full">
+            <div className="grid items-center  h-full">
               {previewImg && (
                 <img
                   src={previewImg}
-                  className="max-h-[40vh] lg:max-h-[50vh] max-w-full"
+                  className="max-h-[40vh] lg:max-h-[50vh] mx-auto"
                 />
               )}
               {!previewImg && (
@@ -74,12 +77,13 @@ export default function CreatePost({ onClose }) {
                   <button
                     type="button"
                     onClick={handleFileInputClick}
-                    className="hidden bg-sky-500 hover:bg-sky-600 text-slate-200 px-4 py-2 mx-auto rounded-lg lg:w-1/3"
+                    className="bg-sky-500 hover:bg-sky-600 text-slate-200 px-4 py-2 mx-auto rounded-lg lg:w-1/3"
                   >
                     Add File
                   </button>
                   <input
-                    // onChange={handleFileInputChange}
+                    className="hidden"
+                    onChange={handleFileInputChange}
                     type="file"
                     name="image"
                     ref={fileInput}

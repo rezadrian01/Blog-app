@@ -12,12 +12,12 @@ export default function CommentItem({ comment }) {
   return (
     <li className="flex gap-2 items-start">
       <img
-        className="h-5 w-5 rounded-full mt-1"
+        className="h-5 aspect-square object-cover rounded-full mt-1"
         src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
           comment.userId.imgProfile
         }`}
       />
-      <div className="flex flex-col w-full lg:pr-4">
+      <div className="flex flex-col items-center md:items-stretch w-full lg:pr-4">
         <div className="flex md:gap-4 flex-col md:flex-row items-center justify-between">
           <Link className="font-semibold" to={`../../${comment.userId.name}`}>
             {comment.userId.name}
