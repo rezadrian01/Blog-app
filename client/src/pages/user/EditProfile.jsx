@@ -1,23 +1,27 @@
+import { useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchUserProfile,
   queryClient,
   updateUserProfile,
 } from "../../utils/http";
 import { Form, Link, useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { authActions } from "../../store/auth";
 
 export default function EditUserProfile() {
   //redirect if username isn't match
+  const [previewImg, setPreviewImg] = useState(null);
   const fileInputField = useRef();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { username } = useSelector((state) => state.auth);
   const { data, isPending } = useQuery({
     queryKey: ["user", { username }],
     queryFn: ({ signal, queryKey }) =>
       fetchUserProfile({ signal, ...queryKey[1] }),
   });
+  // console.log(data);
   const {
     mutate,
     isPending: isPendingUpdateProfile,
@@ -27,8 +31,12 @@ export default function EditUserProfile() {
     onMutate: async (data) => {
       // await queryClient.cancelQueries({queryKey: ['user']})
     },
-    onSuccess: () => {
-      navigate(`/${username}`);
+    onSuccess: (result) => {
+      // console.log(result.username);
+      const { username: newUsername } = result;
+      localStorage.setItem("username", newUsername);
+      dispatch(authActions.updateUsername(newUsername));
+      navigate(`/${newUsername}`);
     },
   });
   if (isPending) {
@@ -36,6 +44,17 @@ export default function EditUserProfile() {
   }
   function handleAddFileClick() {
     fileInputField.current.click();
+  }
+  function handleFileInputChange(event) {
+    const file = event.target.files[0];
+    if (!file) {
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewImg(fileReader.result);
+    };
+    fileReader.readAsDataURL(file);
   }
   function handleSubmit(event) {
     event.preventDefault();
@@ -56,13 +75,22 @@ export default function EditUserProfile() {
         <input type="hidden" name="folderName" value="user" />
         <div className="flex flex-col gap-1">
           <div className="flex gap-10 mb-4 items-center">
-            <img
-              className="w-20 object-cover aspect-square rounded-full"
-              src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
-                data.user.imgProfile
-              }`}
-              alt="User profile photo"
-            />
+            {!previewImg && (
+              <img
+                className="w-20 object-cover aspect-square rounded-full"
+                src={`${import.meta.env.VITE_SERVER_DOMAIN}/${
+                  data.user.imgProfile
+                }`}
+                alt="User profile photo"
+              />
+            )}
+            {previewImg && (
+              <img
+                className="w-20 object-cover aspect-square rounded-full"
+                src={previewImg}
+                alt="New user profile photo"
+              />
+            )}
             <div className="flex flex-col">
               <button
                 type="button"
@@ -72,6 +100,7 @@ export default function EditUserProfile() {
                 Change Photo
               </button>
               <input
+                onChange={handleFileInputChange}
                 ref={fileInputField}
                 type="file"
                 name="image"
@@ -85,6 +114,7 @@ export default function EditUserProfile() {
             type="text"
             name="name"
             id="name"
+            // disabled
             defaultValue={data.user.name}
           />
         </div>

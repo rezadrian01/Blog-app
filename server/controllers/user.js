@@ -125,8 +125,12 @@ exports.updateUserProfile = async (req, res, next) => {
     }
     user.bio = newBio;
     user.name = newName;
-    await user.save();
-    res.status(200).json({ success: true, message: "Success update bio" });
+    const updatedUser = await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Success update bio",
+      username: updatedUser.name,
+    });
   } catch (err) {
     if (!err.statusCode) err.statusCode = 500;
     next(err);

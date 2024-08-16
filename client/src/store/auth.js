@@ -20,6 +20,9 @@ export const authSlice = createSlice({
       state.isLoggedIn = localStorage.getItem("token") ? true : false;
       state.username = localStorage.getItem("username") || "";
     },
+    updateUsername(state, action) {
+      state.username = action.payload;
+    },
   },
 });
 

@@ -113,7 +113,7 @@ export default function Post() {
         />
       )}
       <div className="">
-        <div className="relative bg-neutral-200 flex flex-col items-center xl:flex-row justify-center shadow-lg rounded mt-20 w-3/4 mx-auto min-h-[25rem] overflow-hidden">
+        <div className="relative bg-neutral-200 flex flex-col xl:flex-row xl:justify-evenly items-center justify-center shadow-lg rounded mt-5 lg:mt-20 w-11/12 lg:w-3/4 mx-auto min-h-[25rem] overflow-hidden">
           <Link
             className="absolute w-5 h-5 right-2 top-2"
             to={pathState.previousPath || "/"}
@@ -128,7 +128,7 @@ export default function Post() {
             />
           </div>
           {/* post header */}
-          <div className=" flex flex-col pl-2 pt-2">
+          <div className=" flex flex-col pl-2 pt-2 lg:w-[30rem] ">
             <div className="border-b-2 border-b-slate-600 pb-1 flex items-start gap-4 mb-2">
               <img
                 className="w-5 aspect-square object-cover rounded-full mt-1"
